@@ -1,5 +1,6 @@
 import { getImages } from "./services/api";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from "simplelightbox";
 
 const form = document.querySelector("#search-form");
 const container = document.querySelector(".gallery")
@@ -17,8 +18,13 @@ function onSubmit(e) {
     page = 1;
     container.innerHTML = "";
     const { searchQuery } = e.currentTarget.elements;
-    value = searchQuery.value;
-    getImages(value, page).then((data) => { if (data.hits.length === 0) { Notify.failure("Sorry, there are no images matching your search query. Please try again.") } else { createMarkup(data); {Notify.success(`Hooray! We found ${data.totalHits} images.`)}} })
+    const value = searchQuery.value;
+  getImages(value, page).then((data) => {
+    if (data.hits.length === 0) { Notify.failure("Sorry, there are no images matching your search query. Please try again."); btn.classList.add("is-hidden"); }
+    else
+    { createMarkup(data); { Notify.success(`Hooray! We found ${data.totalHits} images.`) } }
+    
+  })
 }
 function createMarkup({hits}) {
     const markup=hits?.map (({webformatURL, tags, likes, views, comments, downloads  })=> `<div class="photo-card">
@@ -38,11 +44,13 @@ function createMarkup({hits}) {
     </p>
   </div>
 </div>`).join('')
-    container.insertAdjacentHTML("beforeend", markup)
- btn.classList.remove("is-hidden")   
+  container.insertAdjacentHTML("beforeend", markup);
+ { btn.classList.remove("is-hidden") }   
 }
 
 function onClick(e) {
     page += 1;
-    getImages(value, page).then((data) => { console.log(data); if (data !== undefined) { createMarkup(data) } } )
+  getImages(value, page).then((data) => { console.log(data); if (data !== undefined) { createMarkup(data) } } )
 }
+
+//  const lightbox = new SimpleLightbox('.photo-card', { captionDelay: "250", captionsData: "alt"});
