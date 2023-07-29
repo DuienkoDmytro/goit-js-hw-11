@@ -12,7 +12,8 @@ let page = 1;
 let value = "";
 
 function onSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
+  btn.classList.add("is-hidden")
     page = 1;
     container.innerHTML = "";
     const { searchQuery } = e.currentTarget.elements;
@@ -20,14 +21,14 @@ function onSubmit(e) {
     if (!value) {
       Notify.failure("Sorry, you can`t search with clear field. Please type something.");
             return;
-    }
-  getImages(value, page).then(({ data }) => {
+  }
+    getImages(value, page).then(({ data }) => {
     if (data.hits.length < 40) {
-      btn.classList.add("is-hidden")
+      console.log(getImages(value, page));
     }
     else {
-      btn.classList.remove("is-hidden")
-    }
+      btn.classList.remove("is-hidden");
+        }
     if (data.hits.length === 0) {
       Notify.failure("Sorry, there are no images matching your search query. Please try again.");
        }    
@@ -35,6 +36,8 @@ function onSubmit(e) {
     {
       createMarkup(data); { Notify.success(`Hooray! We found ${data.totalHits} images.`) }
     }    
+
+    
   })  
 }
 
@@ -68,6 +71,9 @@ function onClick(e) {
     if (page < data.totalHits / 40)
     { btn.classList.remove("is-hidden") }
     else 
-    { btn.classList.add("is-hidden") };
+    {
+      btn.classList.add("is-hidden");
+      Notify.failure("We're sorry, but you've reached the end of search results.");
+    };
   })  
 }
